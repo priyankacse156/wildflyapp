@@ -1,0 +1,80 @@
+aws servicediscovery create-private-dns-namespace --name sampleaws.com --vpc vpc-0a24cd679bbbe5da3 --region us-east-1
+{
+    "OperationId": "smfqbypfnbhwwbrft6zz2vwleob5p4zv-ko1q2n3b"
+}
+
+aws servicediscovery get-operation --operation-id smfqbypfnbhwwbrft6zz2vwleob5p4zv-ko1q2n3b
+{
+    "Operation": {
+        "Id": "smfqbypfnbhwwbrft6zz2vwleob5p4zv-ko1q2n3b",
+        "Type": "CREATE_NAMESPACE",
+        "Status": "SUCCESS",
+        "CreateDate": "2021-04-28T12:18:37.415000-05:00",
+        "UpdateDate": "2021-04-28T12:19:17.943000-05:00",
+        "Targets": {
+            "NAMESPACE": "ns-o34z4iqfs4aubx2n"
+        }
+    }
+}
+aws servicediscovery create-service --name myapp --dns-config 'NamespaceId="ns-o34z4iqfs4aubx2n",DnsRecords=[{Type="A",TTL="300"}]' --health-check-custom-config FailureThreshold=1 --region us-east-1
+{
+    "Service": {
+        "Id": "srv-t2uzzgtn4vlicwo7",
+        "Arn": "arn:aws:servicediscovery:us-east-1:607114693507:service/srv-t2uzzgtn4vlicwo7",
+        "Name": "myapp",
+        "NamespaceId": "ns-o34z4iqfs4aubx2n",
+        "DnsConfig": {
+            "NamespaceId": "ns-o34z4iqfs4aubx2n",
+            "RoutingPolicy": "MULTIVALUE",
+            "DnsRecords": [
+                {
+                    "Type": "A",
+                    "TTL": 300
+                }
+            ]
+        },
+        "HealthCheckCustomConfig": {
+            "FailureThreshold": 1
+        },
+        "CreateDate": "2021-04-28T12:21:14.593000-05:00",
+        "CreatorRequestId": "ba603d0e-2ddc-467f-9228-72f301981394"
+    }
+}
+
+Create cluster:
+aws ecs create-cluster --cluster-name tutorial --region us-east-1
+{
+    "cluster": {
+        "clusterArn": "arn:aws:ecs:us-east-1:607114693507:cluster/tutorial",
+        "clusterName": "tutorial",
+        "status": "ACTIVE",
+        "registeredContainerInstancesCount": 0,
+        "runningTasksCount": 0,
+        "pendingTasksCount": 0,
+        "activeServicesCount": 0,
+        "statistics": [],
+        "tags": [],
+        "settings": [
+            {
+                "name": "containerInsights",
+                "value": "disabled"
+            }
+        ],
+        "capacityProviders": [],
+        "defaultCapacityProviderStrategy": []
+    }
+}
+
+
+aws ecs register-task-definition --cli-input-json file://fargate-task.json --region us-east-1
+
+aws ecs create-service --cli-input-json file://ecs-service-discovery.json --region us-east-1
+
+aws servicediscovery list-instances --service-id srv-t2uzzgtn4vlicwo7 --region us-east-1
+
+
+aws servicediscovery deregister-instance --service-id srv-t2uzzgtn4vlicwo7 --instance-id 1a0ca15b05a54447bbfbb34f1371849b --region us-east-1
+aws servicediscovery deregister-instance --service-id srv-t2uzzgtn4vlicwo7 --instance-id 546ffadddda34501ad0b4b164d1d5ebc --region us-east-1
+
+
+aws servicediscovery delete-service --id srv-t2uzzgtn4vlicwo7 --region us-east-1

@@ -1,0 +1,35 @@
+{
+    "family": "tutorial-task-def",
+    "taskRoleArn": "arn:aws:iam::607114693507:role/ecsTaskExecutionRole",
+    "executionRoleArn": "arn:aws:iam::607114693507:role/ecsTaskExecutionRole",
+        "networkMode": "awsvpc",
+        "containerDefinitions": [
+            {
+                "name": "sample-app",
+                "image": "607114693507.dkr.ecr.us-east-1.amazonaws.com/wildflyrepo2:latest",
+                "portMappings": [
+                    {
+                        "containerPort": 8080,
+                        "hostPort": 8080,
+                        "protocol": "tcp"
+                    }
+                ],
+                "essential": true,
+                "logConfiguration": {
+                    "logDriver": "awslogs",
+                    "options": {
+                        "awslogs-group": "awslogs-widlfly",
+                        "awslogs-region": "us-east-1",
+                        "awslogs-stream-prefix": "widlfly-ecs"
+                    }
+
+                }
+
+            }
+        ],
+        "requiresCompatibilities": [
+            "FARGATE"
+        ],
+        "cpu": "256",
+        "memory": "512"
+}
