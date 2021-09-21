@@ -24,7 +24,7 @@ ENV LAUNCH_JBOSS_IN_BACKGROUND true
 RUN yum install epel-release -y
 RUN yum install jq -y
 
-ARG APP_FILE=appfile.war
+ARG APP_FILE=*.war
 # Add your application to the deployment folder
 ADD ${APP_FILE} /opt/jboss/wildfly/standalone/deployments/${APP_FILE}
 # Add standalone-ha.xml - set your own network settings
